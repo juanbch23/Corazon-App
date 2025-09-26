@@ -1,0 +1,21 @@
+# Docker ignore para backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+*.log
+.DS_Store
+.git/
+.gitignore
+README.md
+Dockerfile
+.dockerignore

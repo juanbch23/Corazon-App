@@ -1,0 +1,146 @@
+/* ==== RESET Y ESTILO GENERAL ==== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f7f8fa;
+  color: #222;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ==== LAYOUT: STICKY HEADER Y FOOTER ==== */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px 0;
+}
+
+/* ==== BOTONES Y FORMULARIOS ==== */
+button,
+.btn {
+  padding: 10px 22px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover,
+.btn:hover {
+  background: #e65c00;
+}
+
+input,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* ==== MENSAJES Y CARDS ==== */
+.message-box {
+  background: #ffe9e9;
+  color: #a33;
+  border-left: 5px solid #d33;
+  padding: 12px 16px;
+  border-radius: 5px;
+  margin-bottom: 16px;
+}
+
+.result-card,
+.no-results {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.07);
+  padding: 32px;
+  margin-top: 24px;
+}
+
+.result-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  align-items: center;
+}
+
+.result-graph {
+  flex: 1;
+  min-width: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.confidence-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.result-details {
+  flex: 2;
+  min-width: 300px;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px;
+}
+
+/* ==== RIESGO ==== */
+.risk-0 {
+  color: #28a745;
+  font-weight: bold;
+}
+.risk-1 {
+  color: #ffc107;
+  font-weight: bold;
+}
+.risk-2 {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* ==== MEDIA QUERIES ==== */
+@media (max-width: 900px) {
+  .result-card {
+    flex-direction: column;
+  }
+  .container {
+    padding: 0 12px;
+  }
+}
