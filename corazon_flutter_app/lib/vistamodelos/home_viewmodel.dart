@@ -12,6 +12,7 @@ class HomeViewModel extends ChangeNotifier {
   bool _estaCargando = false;
   String _error = '';
   String _nombreUsuario = '';
+  String _nombreCompleto = '';
   bool _esAdmin = false;
   Map<String, dynamic>? _datosUsuario;
   
@@ -21,39 +22,76 @@ class HomeViewModel extends ChangeNotifier {
   String get error => _error;
   String? get mensajeError => _error.isNotEmpty ? _error : null;
   String get nombreUsuario => _nombreUsuario;
+  String get nombreCompleto => _nombreCompleto;
   bool get esAdmin => _esAdmin;
   String? get tipoUsuario => _esAdmin ? 'admin' : 'paciente';
   Map<String, dynamic>? get datosUsuario => _datosUsuario;
+  
+  /// Obtiene las opciones del menú principal del dashboard
+  List<Map<String, dynamic>> get opcionesMenu {
+    List<Map<String, dynamic>> opciones = [
+      {
+        'titulo': 'Nuevo Diagnóstico',
+        'descripcion': 'Realizar evaluación cardiovascular',
+        'icono': Icons.medical_services,
+        'ruta': '/diagnostico',
+        'color': Colors.orange.shade600,
+      },
+      {
+        'titulo': 'Mis Resultados', 
+        'descripcion': 'Ver diagnósticos anteriores',
+        'icono': Icons.assessment,
+        'ruta': '/resultados',
+        'color': Colors.orange.shade600,
+      },
+      {
+        'titulo': 'Configuración',
+        'descripcion': 'Actualizar datos personales',
+        'icono': Icons.settings,
+        'ruta': '/configuracion',
+        'color': Colors.orange.shade600,
+      },
+    ];
+    
+    if (_esAdmin) {
+      opciones.add({
+        'titulo': 'Panel de Administrador',
+        'descripcion': 'Gestionar pacientes del sistema',
+        'icono': Icons.admin_panel_settings,
+        'ruta': '/admin/pacientes',
+        'color': Colors.grey.shade700,
+      });
+    }
+    
+    return opciones;
+  }
 
-  /// Inicializa los datos del usuario al cargar el menú principal
-  /// Determina si es admin o paciente para mostrar opciones correspondientes
-  Future<void> inicializarDatos() async {
-    _estaCargando = true;
-    _error = '';
-    notifyListeners();
-
+  /// Carga los datos del usuario desde el almacenamiento local
+  Future<void> cargarDatosUsuario() async {
     try {
-      // Simulación de carga de datos del usuario - integrar con ApiService
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Datos simulados del usuario - reemplazar con llamada real
-      _datosUsuario = {
-        'nombre': 'Juan Pérez',
-        'email': 'juan.perez@email.com',
-        'rol': 'paciente', // o 'admin'
-      };
-      
-      _nombreUsuario = _datosUsuario!['nombre'] ?? 'Usuario';
-      _esAdmin = _determinarTipoUsuario('juan.perez', _datosUsuario!);
-      
-      _estaCargando = false;
+      _estaCargando = true;
+      _error = '';
       notifyListeners();
 
+      // Intentar obtener datos del usuario actual
+      final datos = await _apiService.obtenerConfiguracion();
+      
+      _nombreUsuario = datos['username'] ?? '';
+      _nombreCompleto = datos['nombre_completo'] ?? datos['nombre'] ?? _nombreUsuario;
+      _esAdmin = _determinarTipoUsuario(_nombreUsuario, datos);
+      _datosUsuario = datos;
     } catch (e) {
-      _error = 'Error al cargar datos del usuario: ${e.toString()}';
+      _error = 'Error al cargar datos del usuario: $e';
+      debugPrint('Error en cargarDatosUsuario: $e');
+    } finally {
       _estaCargando = false;
       notifyListeners();
     }
+  }
+
+  /// Inicializa los datos del viewmodel (alias para cargarDatosUsuario)
+  Future<void> inicializarDatos() async {
+    await cargarDatosUsuario();
   }
 
   /// Determina si el usuario es administrador
@@ -74,56 +112,10 @@ class HomeViewModel extends ChangeNotifier {
   /// Verifica si el usuario actual es paciente
   bool get esPaciente => !_esAdmin;
 
-  /// Obtiene las opciones del menú según el tipo de usuario
-  List<Map<String, dynamic>> get opcionesMenu {
-    if (_esAdmin) {
-      return [
-        {
-          'titulo': 'Panel de Administración',
-          'icono': Icons.admin_panel_settings,
-          'ruta': '/admin',
-          'descripcion': 'Gestionar usuarios y diagnósticos'
-        },
-        {
-          'titulo': 'Ver Diagnósticos',
-          'icono': Icons.analytics,
-          'ruta': '/diagnostico',
-          'descripcion': 'Revisar diagnósticos de pacientes'
-        },
-        {
-          'titulo': 'Configuración',
-          'icono': Icons.settings,
-          'ruta': '/configuracion',
-          'descripcion': 'Configurar mi información personal'
-        },
-      ];
-    } else {
-      return [
-        {
-          'titulo': 'Realizar Diagnóstico',
-          'icono': Icons.favorite,
-          'ruta': '/diagnostico',
-          'descripcion': 'Evaluación cardiovascular'
-        },
-        {
-          'titulo': 'Mis Resultados',
-          'icono': Icons.assessment,
-          'ruta': '/resultados',
-          'descripcion': 'Ver historial de diagnósticos'
-        },
-        {
-          'titulo': 'Configuración',
-          'icono': Icons.settings,
-          'ruta': '/configuracion',
-          'descripcion': 'Configurar mi información personal'
-        },
-      ];
-    }
-  }
-
   /// Limpia los datos del usuario al cerrar sesión
   void cerrarSesion() {
     _nombreUsuario = '';
+    _nombreCompleto = '';
     _esAdmin = false;
     _datosUsuario = null;
     _error = '';

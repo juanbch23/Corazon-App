@@ -2,6 +2,8 @@ import numpy as np
 import tensorflow as tf
 import psycopg2
 import os
+from config import get_db_config
+from config import get_db_config
 
 def cargar_interprete():
     interprete = tf.lite.Interpreter(model_path="modeloDEC.tflite")
@@ -21,12 +23,12 @@ def predecir_con_tflite(datos_entrada):
 
 # Modelo para conexión a base de datos
 def obtener_conexion_bd():
-    # Configuración para Docker o desarrollo local
-    DATABASE_URL = os.environ.get('DATABASE_URL')
-    
-    if DATABASE_URL:
-        # Para Docker - usar DATABASE_URL del contenedor
-        return psycopg2.connect(DATABASE_URL)
-    else:
-        # Para desarrollo local
-        return psycopg2.connect('postgresql://postgres:1234@localhost:5432/dec_database')
+    # Usar configuración centralizada de config.py
+    db_config = get_db_config()
+    return psycopg2.connect(
+        host=db_config['host'],
+        database=db_config['database'],
+        user=db_config['user'],
+        password=db_config['password'],
+        port=db_config.get('port', 5432)
+    )
