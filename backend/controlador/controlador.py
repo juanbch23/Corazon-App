@@ -6,6 +6,44 @@ import psycopg2
 
 rutas = Blueprint('rutas', __name__)
 
+@rutas.route('/', methods=['GET'])
+def home():
+    """Ruta por defecto - API Health Check"""
+    return jsonify({
+        'message': 'API Corazón App funcionando correctamente',
+        'status': 'OK',
+        'version': '1.0.0',
+        'endpoints': [
+            '/api/login',
+            '/api/registro', 
+            '/api/logout',
+            '/api/diagnostico'
+        ]
+    }), 200
+
+@rutas.route('/health', methods=['GET'])
+def health_check():
+    """Health check para monitoreo"""
+    try:
+        # Verificar conexión a BD
+        conn = obtener_conexion_bd()
+        cur = conn.cursor()
+        cur.execute('SELECT 1')
+        cur.fetchone()
+        cur.close()
+        conn.close()
+        
+        return jsonify({
+            'status': 'healthy',
+            'database': 'connected',
+            'model': 'loaded'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e)
+        }), 500
+
 @rutas.route('/api/login', methods=['POST'])
 def login():
     usuario = request.json.get('username')

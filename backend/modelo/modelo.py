@@ -4,6 +4,7 @@ import psycopg2
 import os
 from config import get_db_config
 from config import get_db_config
+from config import get_db_config
 
 def cargar_interprete():
     interprete = tf.lite.Interpreter(model_path="modeloDEC.tflite")
