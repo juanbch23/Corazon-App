@@ -41,4 +41,5 @@ app.register_blueprint(ControladorSesion.blueprint)
 
 if __name__ == '__main__':
     debug = FLASK_ENV != 'production'
-    app.run(host='0.0.0.0', debug=debug, port=PORT)
+    port = int(os.environ.get('PORT', PORT))  # Render usa PORT env var
+    app.run(host='0.0.0.0', debug=debug, port=port)
