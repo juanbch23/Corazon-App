@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  corazon-api:
+    build: .
+    ports:
+      - "5000:5000"  # Puerto host:puerto container
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://dec_database_user:yYRGubYoptewjiFC8dQm9qi7nqniM24Z@dpg-d43p8s6r433s739nmumg-a.oregon-postgres.render.com/dec_database
+    volumes:
+      - ./modeloDEC.tflite:/app/modeloDEC.tflite
+    restart: unless-stopped
+    networks:
+      - corazon-network
+
+networks:
+  corazon-network:
+    driver: bridge
