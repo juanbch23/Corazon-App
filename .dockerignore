@@ -1,0 +1,37 @@
+# Ignorar aplicaciones que no son el backend
+corazon_flutter_app/
+Build/
+copia/
+ngrok-new/
+Proyecto -corazon-web/
+
+# Ignorar archivos de Flutter
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/build/
+**/.pub-cache/
+**/.pub/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Runner.xcworkspace
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+
+# Ignorar archivos del entorno local
+.vscode/
+env/
+__pycache__/
+.git/
+.gitignore
+node_modules/
+
+# Ignorar archivos temporales
+*.log
+*.tmp
+*.temp
+.DS_Store
